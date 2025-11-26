@@ -3,9 +3,10 @@ import { dockApps } from '#constants'
 import { Tooltip } from 'react-tooltip'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
+import useWindowStore from '#store/window.js'
 
 const Dock = () => {
-    
+    const {openWindow, closeWindow, windows} = useWindowStore()
     const dockRef = useRef(null)
 
     useGSAP(() => {
@@ -58,7 +59,21 @@ const Dock = () => {
 
     
     const toggleApp = (app) => {
-        
+        if(!app.canOpen) return;
+
+        const window = windows[app.id]
+
+        if(!window) {
+            console.log(`Window not found for app: ${app.id}`)
+            return;
+        }
+
+        if(window.isOpen){
+            closeWindow(app.id)
+        } else {
+            openWindow(app.id)
+        }
+
     }
 
   return (
@@ -66,7 +81,7 @@ const Dock = () => {
         <div ref={dockRef} className='dock-container'>
             {dockApps.map((val) => (
                 <div key={val.id ?? val.name} className='relative flex justify-center'>
-                    <button type='button' className='dock-icon' aria-label={val.name} data-tooltip-id="dock-tooltip" data-tooltip-content={val.name} data-tooltip-delay-show={150} disabled={!val.canOpen} onClick={() => toggleApp({id, canOpen})}>
+                    <button type='button' className='dock-icon' aria-label={val.name} data-tooltip-id="dock-tooltip" data-tooltip-content={val.name} data-tooltip-delay-show={150} disabled={!val.canOpen} onClick={() => toggleApp(val)}>
                         <img src={`/images/${val.icon}`} alt={val.name} loading='lazy' className={val.canOpen ? '' : 'opacity-60'} />
                     </button>
                 </div>
