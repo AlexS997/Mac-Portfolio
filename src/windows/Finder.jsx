@@ -2,12 +2,25 @@ import WindowControls from "#components/WindowControls"
 import { locations } from "#constants"
 import WindowWrapper from "#hoc/WindowWrapper"
 import useLocationStore from "#store/location"
+import useWindowStore from "#store/window"
 import clsx from "clsx"
 import { Search } from "lucide-react"
 
 const Finder = () => {
 
+    const {openWindow} = useWindowStore()
+
     const {activeLocation, setActiveLocation} = useLocationStore()
+
+    const openItem = (item) => {
+        if(item.fileType === 'pdf') return openWindow('resume')
+
+        if(item.kind === 'folder') return setActiveLocation(item)
+
+        if(['fig', 'url'].includes(item.fileType) && item.href) return window.open(item.href, "_blanck")
+
+        openWindow(`${item.fileType}${item.kind}`, item)
+    }
 
     const renderList = (name, items) => (
         <div>
@@ -39,10 +52,20 @@ const Finder = () => {
 
                 {renderList('Favorites', Object.values(locations))}   
                 
-                {renderList('Work', locations.work.children)}
+                {renderList('My Apps', locations.work.children)}
                 
             </div>
+           
+            <ul className="content">
+                {activeLocation?.children.map((val) => (
+                    <li key={val.id} className={val.position} onClick={() => openItem(val)}>
+                        <img src={val.icon} alt={val.name} />
+                        <p>{val.name}</p>
+                    </li>
+                ))}
+            </ul>
         </div>
+
     </>
   )
 }
