@@ -1,9 +1,11 @@
 import Dock from "#components/Dock"
+import Home from "#components/Home"
 import Navbar from "#components/Navbar"
 import Welcome from "#components/Welcome"
 import Contact from "#windows/COntact"
 import Finder from "#windows/Finder"
 import ImageWindow from "#windows/Image"
+import Photos from "#windows/Photos"
 import ResumeWindow from "#windows/Resume"
 import Safari from "#windows/Safari"
 import Terminal from "#windows/terminal"
@@ -26,6 +28,8 @@ const App = () => {
       <TextWindow />
       <ImageWindow />
       <Contact />
+      <Photos />
+      <Home />
     </main>
   )
 }
